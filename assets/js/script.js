@@ -10,7 +10,7 @@ var windEl = document.querySelector("#wind-speed");
 var uvEl = document.querySelector("#UV-index");
 var historyEl = document.querySelector("#history");
 var forecastEl = document.querySelectorAll(".forecast");
-var apiKey = config.WEATHER_KEY;
+var apiKey = "&appid=5ca80fae0ad046146aafb9af3b710993";
 
 // variable to get the local storage info for saved cites
 var cityHistory = JSON.parse(localStorage.getItem("search")) || [];
