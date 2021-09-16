@@ -16,12 +16,13 @@ var apiKey = "&appid=5ca80fae0ad046146aafb9af3b710993";
 var cityHistory = JSON.parse(localStorage.getItem("search")) || [];
 var cityName = (cityHistory[cityHistory.length-1]) || "Austin";
 
+// ability to just hit enter to search for the city name 
 inputEl.addEventListener("keyup", function(e) {
     if (e.keyCode === 13) {
         searchBtnEl.click();
     }
 });
-
+// search for city on "search" button click
 searchBtnEl.onclick = function () {
     var searchTerm = inputEl.value;
     getWeather(searchTerm);
@@ -30,13 +31,13 @@ searchBtnEl.onclick = function () {
     inputEl.value = "";
     loadCityHistory();
 };
-
+// clear local storage data on "clear histroy" button click
 clearBtnEl.addEventListener("click", function () {
     cityHistory = [];
     localStorage.clear();
     loadCityHistory();
 })
-
+// main function to get the weather data for the city name they input 
 var getWeather = function (cityName) {
     var queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial${apiKey}`;
     fetch(queryURL).then(function (response) {
@@ -46,6 +47,7 @@ var getWeather = function (cityName) {
             // convert date from UTC miliseconds to seconds 
             var currentDate = new Date(response.dt * 1000);
             var day = currentDate.getDate();
+            // data for month comes back as an idnex. Jan starts at zero so need to add 1 to get the correct number
             var month = currentDate.getMonth() + 1;
             var year = currentDate.getFullYear();
             cityNameEl.innerHTML = response.name + ` (${month}/${day}/${year})`;
@@ -53,7 +55,7 @@ var getWeather = function (cityName) {
             weatherPic = response.weather[0].icon;
             imgEl.setAttribute("src", `https://openweathermap.org/img/wn/${weatherPic}@2x.png`);
             imgEl.setAttribute("alt", response.weather[0].description);
-            // need to convert the temperature to a kelvin number with a function later
+            // usin imperial on the api call was able to get the data in Fahrenheit but needed to round up or down as it displays in decimals
             tempEl.innerHTML = `Temperature: ${Math.round(response.main.temp)}&#176F`;
             windEl.innerHTML = `Wind Speed: ${response.wind.speed} MPH`;
             humidityEl.innerHTML = `Humidity: ${response.main.humidity}%`;
@@ -82,6 +84,8 @@ var getWeather = function (cityName) {
                 getFiveDay(cityId);
         });
 };
+// function for pulling the Five Day Forecast. Per Docs, it gives me the info at speciic time of day, not full day average like most Weahter Apps. 
+// Have to pay for an upgrade to get the 16 day forecast to get the average temp data. 
 var getFiveDay = function (cityId) {
     var fiveDayQuery = `https://api.openweathermap.org/data/2.5/forecast?id=${cityId}&units=imperial${apiKey}`;
     fetch(fiveDayQuery).then(function (response) {
@@ -115,7 +119,7 @@ var getFiveDay = function (cityId) {
             }
         });
 }
-
+// function to load the past cities on the page in order to select them again shoud they choose too. 
 var loadCityHistory = function () {
     historyEl.innerHTML = "";
     for (let i = 0; i < cityHistory.length; i++) {
@@ -132,11 +136,12 @@ var loadCityHistory = function () {
         historyEl.append(historyItem);
     }
 }
+// checks the local storage and if the cites are saved, loads the last searched city. 
 loadCityHistory();
 if (cityHistory.length > 0) {
     getWeather(cityHistory[cityHistory.length - 1]);
 };
-
+// this is the main function to load the page in the correct order
 var loadPage = function () {
     getWeather(cityName);
     loadCityHistory();
