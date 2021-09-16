@@ -20,7 +20,7 @@ I also used Bootstrap CDN in order to help style the page and easily manipulate 
 * When the user types in a new city, the corresponding weather information will load in to their respective areas on screen. 
 * That city will then be saved in to their local storage and displayed as a box for them to access again should they need to. 
 * If the user refreshes the page, the last searched city will load on to the page for them. 
-* The UV index will changed colors based on the number that is displayed:
+* The UV index will change colors based on the number that is displayed:
     * green for a UV index less than 3
     * orange for a UV index between 3 and 6
     * red for a UV index over 6
